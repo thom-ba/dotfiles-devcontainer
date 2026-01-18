@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# 1. Setup Config Directories
+export XDG_CONFIG_HOME="$HOME/.config"
+mkdir -p "$XDG_CONFIG_HOME"
+
+# 2. Link Dotfiles (Assuming they are in the root of your repo)
+# Using -f to overwrite existing files if DevPod recreates them
+ln -sf "$PWD/nvim" "$XDG_CONFIG_HOME/nvim"
+ln -sf "$PWD/.zshrc" "$HOME/.zshrc"
+
+# 3. Define Packages
+packages=(
+    fd
+    ripgrep
+    starship
+    lazygit
+    kubectl
+    derailed/k9s/k9s
+    fluxcd/tap/flux
+)
+
+# 4. Install Packages
+# Use 'command -v' to find brew dynamically instead of a hardcoded path
+BREW_PATH=$(command -v brew || echo "/home/linuxbrew/.linuxbrew/bin/brew")
+
+for package in "${packages[@]}"; do
+    echo "Installing $package..."
+    $BREW_PATH install "$package"
+done
+
+echo "All packages from the setup script have been installed."
